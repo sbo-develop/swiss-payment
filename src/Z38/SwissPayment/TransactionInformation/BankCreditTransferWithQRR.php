@@ -39,7 +39,7 @@ class BankCreditTransferWithQRR extends BankCreditTransfer
         $creditorName,
         $creditorAddress,
         IBAN $creditorIBAN,
-        FinancialInstitutionInterface $creditorAgent,
+        FinancialInstitutionInterface $creditorAgent = null,
         $creditorReference
     ) {
         if (!preg_match('/^[0-9]{1,27}$/', $creditorReference) || !PostalAccount::validateCheckDigit($creditorReference)) {

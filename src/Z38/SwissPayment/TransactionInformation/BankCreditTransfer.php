@@ -34,7 +34,7 @@ class BankCreditTransfer extends CreditTransfer
      *
      * @throws \InvalidArgumentException When the amount is not in EUR or CHF or when the creditor agent is not BIC or IID.
      */
-    public function __construct($instructionId, $endToEndId, Money\Money $amount, $creditorName, $creditorAddress, IBAN $creditorIBAN, FinancialInstitutionInterface $creditorAgent)
+    public function __construct($instructionId, $endToEndId, Money\Money $amount, $creditorName, $creditorAddress, IBAN $creditorIBAN, FinancialInstitutionInterface $creditorAgent = null)
     {
         if (!$amount instanceof Money\EUR && !$amount instanceof Money\CHF) {
             throw new InvalidArgumentException(sprintf(
@@ -60,9 +60,11 @@ class BankCreditTransfer extends CreditTransfer
     {
         $root = $this->buildHeader($doc, $paymentInformation);
 
-        $creditorAgent = $doc->createElement('CdtrAgt');
-        $creditorAgent->appendChild($this->creditorAgent->asDom($doc));
-        $root->appendChild($creditorAgent);
+        if($this->creditorAgent){
+            $creditorAgent = $doc->createElement('CdtrAgt');
+            $creditorAgent->appendChild($this->creditorAgent->asDom($doc));
+            $root->appendChild($creditorAgent);
+        }
 
         $root->appendChild($this->buildCreditor($doc));
 
