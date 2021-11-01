@@ -29,7 +29,7 @@ class BankCreditTransfer extends CreditTransfer
     /**
      * {@inheritdoc}
      *
-     * @param IBAN    $creditorIBAN  IBAN of the creditor
+     * @param IBAN $creditorIBAN IBAN of the creditor
      * @param BIC|IID $creditorAgent BIC or IID of the creditor's financial institution
      *
      * @throws \InvalidArgumentException When the amount is not in EUR or CHF or when the creditor agent is not BIC or IID.
@@ -37,19 +37,23 @@ class BankCreditTransfer extends CreditTransfer
     public function __construct($instructionId, $endToEndId, Money\Money $amount, $creditorName, $creditorAddress, IBAN $creditorIBAN, FinancialInstitutionInterface $creditorAgent = null)
     {
         if (!$amount instanceof Money\EUR && !$amount instanceof Money\CHF) {
-            throw new InvalidArgumentException(sprintf(
-                'The amount must be an instance of Z38\SwissPayment\Money\EUR or Z38\SwissPayment\Money\CHF (instance of %s given).',
-                get_class($amount)
-            ));
+            throw new InvalidArgumentException(
+                sprintf(
+                    'The amount must be an instance of Z38\SwissPayment\Money\EUR or Z38\SwissPayment\Money\CHF (instance of %s given).',
+                    get_class($amount)
+                )
+            );
         }
 
-        if (!$creditorAgent instanceof BIC && !$creditorAgent instanceof IID) {
-            throw new InvalidArgumentException('The creditor agent must be an instance of BIC or IID.');
+        if (null !== $creditorAgent) {
+            if (!$creditorAgent instanceof BIC && !$creditorAgent instanceof IID) {
+                throw new InvalidArgumentException('The creditor agent must be an instance of BIC or IID.');
+            }
         }
 
         parent::__construct($instructionId, $endToEndId, $amount, $creditorName, $creditorAddress);
 
-        $this->creditorIBAN = $creditorIBAN;
+        $this->creditorIBAN  = $creditorIBAN;
         $this->creditorAgent = $creditorAgent;
     }
 
@@ -60,7 +64,7 @@ class BankCreditTransfer extends CreditTransfer
     {
         $root = $this->buildHeader($doc, $paymentInformation);
 
-        if($this->creditorAgent){
+        if ($this->creditorAgent) {
             $creditorAgent = $doc->createElement('CdtrAgt');
             $creditorAgent->appendChild($this->creditorAgent->asDom($doc));
             $root->appendChild($creditorAgent);
