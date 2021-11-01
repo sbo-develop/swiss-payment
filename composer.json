@@ -1,5 +1,5 @@
 {
-    "name": "ch2877/swiss-payment",
+    "name": "sbo-develop/swiss-payment",
     "type": "library",
     "license": "MIT",
     "description": "PHP library to generate Swiss pain.001 messages (complies with ISO-20022)",
